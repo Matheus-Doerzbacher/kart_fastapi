@@ -1,0 +1,7 @@
+from models.piloto_model import PilotoModel
+from models.temporada_model import TemporadaModel
+from models.temporada_piloto_model import TemporadaPilotoModel
+from models.corrida_model import CorridaModel
+from models.resultado_corrida_model import ResultadoCorridaModel
+from models.pista_model import PistaModel
+from models.usuario_model import UsuarioModel
