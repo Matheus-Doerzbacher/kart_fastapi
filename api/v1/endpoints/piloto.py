@@ -3,6 +3,7 @@ from typing import List
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 from sqlalchemy.exc import IntegrityError
+from sqlalchemy.orm import selectinload
 
 from core.deps import get_current_user, get_session
 
@@ -62,7 +63,7 @@ async def get_pilotos(
     async with db as session:
         query = select(PilotoModel)
         result = await session.execute(query)
-        pilotos: List[PilotoModel] = result.scalars().all()
+        pilotos: List[PilotoModel] = result.scalars().unique().all()
 
         return pilotos
 
@@ -74,15 +75,37 @@ async def get_piloto(
     db: AsyncSession = Depends(get_session),
 ):
     async with db as session:
-        query = select(PilotoModel).filter(PilotoModel.id_piloto == piloto_id)
-        result = await session.execute(query)
-        piloto: PilotoModel = result.scalars().unique().one_or_none()
+        # Query para buscar o piloto com sua temporada atual
+        queryPiloto = select(PilotoModel).filter(PilotoModel.id_piloto == piloto_id)
+        result = await session.execute(queryPiloto)
+        piloto: PilotoModel = result.scalars().first()
 
-        if piloto is None:
+        queryTemporada = select(TemporadaModel).filter(
+            TemporadaModel.is_temporada_atual == True
+        )
+        result = await session.execute(queryTemporada)
+        temporada_atual = result.scalars().first()
+
+        if temporada_atual is None:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
-                detail="Piloto não encontrado",
+                detail="Não há temporada atual definida",
             )
+
+        queryTemporadaPiloto = select(TemporadaPilotoModel).filter(
+            TemporadaPilotoModel.id_piloto == piloto_id,
+            TemporadaPilotoModel.id_temporada == temporada_atual.id_temporada,
+        )
+        result = await session.execute(queryTemporadaPiloto)
+        temporada_piloto: TemporadaPilotoModel = result.scalars().first()
+
+        if temporada_piloto is None:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="Piloto não encontrado na temporada atual",
+            )
+
+        piloto.temporada_atual = temporada_piloto
 
         return piloto
 

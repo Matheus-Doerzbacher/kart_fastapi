@@ -11,11 +11,14 @@ class PilotoModel(settings.DBBaseModel):
     url_foto: str = Column(String(256), nullable=False)
 
     # Relacionamentos
-    temporadas = relationship(
+    temporada_atual = relationship(
         "TemporadaPilotoModel",
         back_populates="piloto",
         cascade="all, delete-orphan",
+        lazy="joined",
+        uselist=False,
     )
+
     resultados = relationship(
         "ResultadoCorridaModel",
         back_populates="piloto",

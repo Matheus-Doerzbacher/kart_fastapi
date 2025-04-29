@@ -1,7 +1,7 @@
 from pydantic import BaseModel, EmailStr
 from typing import Optional
 
-from schemas.temporada_piloto_schema import TemporadaPiloto
+from schemas.temporada_piloto_schema import TemporadaPilotoResults
 
 
 class PilotoBase(BaseModel):
@@ -30,4 +30,4 @@ class Piloto(PilotoInDB):
 
 
 class PilotoDatas(Piloto):
-    temporadas: Optional[TemporadaPiloto]
+    temporada_atual: Optional[TemporadaPilotoResults]

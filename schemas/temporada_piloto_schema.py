@@ -2,12 +2,15 @@ from pydantic import BaseModel
 from typing import List, Optional
 
 
-class TemporadaPilotoBase(BaseModel):
+class TemporadaPilotoResults(BaseModel):
+    pontos: Optional[int] = None
+    vitorias: Optional[int] = None
+    posicao: Optional[int] = None
+
+
+class TemporadaPilotoBase(TemporadaPilotoResults):
     id_piloto: int
     id_temporada: int
-    pontos: int = None
-    vitorias: int = None
-    posicao: int = None
 
 
 class TemporadaPilotoCreate(TemporadaPilotoBase):
