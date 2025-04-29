@@ -56,7 +56,7 @@ async def get_temporada_piloto(
     """
     async with db as session:
         query = select(TemporadaPilotoModel).filter(
-            TemporadaPilotoModel.id == temporada_piloto_id
+            TemporadaPilotoModel.id_temporada_piloto == temporada_piloto_id
         )
         result = await session.execute(query)
         temporada_piloto = result.scalars().first()
@@ -81,7 +81,7 @@ async def update_temporada_piloto(
     """
     async with db as session:
         query = select(TemporadaPilotoModel).filter(
-            TemporadaPilotoModel.id == temporada_piloto_id
+            TemporadaPilotoModel.id_temporada_piloto == temporada_piloto_id
         )
         result = await session.execute(query)
         db_temporada_piloto = result.scalars().first()
@@ -111,7 +111,7 @@ async def delete_temporada_piloto(
     """
     async with db as session:
         query = select(TemporadaPilotoModel).filter(
-            TemporadaPilotoModel.id == temporada_piloto_id
+            TemporadaPilotoModel.id_temporada_piloto == temporada_piloto_id
         )
         result = await session.execute(query)
         temporada_piloto = result.scalars().first()
