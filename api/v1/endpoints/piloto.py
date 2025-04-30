@@ -26,31 +26,12 @@ async def post_piloto(
     usuario_logado: UsuarioModel = Depends(get_current_user),
 ):
     async with db as session:
-
-        query = select(TemporadaModel).filter(TemporadaModel.is_temporada_atual == True)
-        result = await session.execute(query)
-        temporada_atual = result.scalars().first()
-
-        if temporada_atual is None:
-            raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND,
-                detail="Não há temporada atual definida",
-            )
-
         novo_piloto: PilotoModel = PilotoModel(
             nome=piloto.nome,
             url_foto=piloto.url_foto,
         )
 
         session.add(novo_piloto)
-        await session.flush()  # Isso vai gerar o ID do piloto
-
-        temporada_piloto: TemporadaPilotoModel = TemporadaPilotoModel(
-            id_piloto=novo_piloto.id_piloto,
-            id_temporada=temporada_atual.id_temporada,
-        )
-
-        session.add(temporada_piloto)
         await session.commit()
         return novo_piloto
 
