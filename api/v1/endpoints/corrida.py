@@ -26,6 +26,19 @@ async def create_corrida(
         return db_corrida
 
 
+# GET Corridas por temporada
+@router.get("/temporada/{temporada_id}", response_model=List[Corrida])
+async def get_corridas_por_temporada(
+    temporada_id: int,
+    db: AsyncSession = Depends(get_session),
+):
+    async with db as session:
+        query = select(CorridaModel).filter(CorridaModel.id_temporada == temporada_id)
+        result = await session.execute(query)
+        corridas = result.scalars().all()
+        return corridas
+
+
 # GET Corridas
 @router.get("/", response_model=List[Corrida])
 async def get_corridas(

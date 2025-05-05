@@ -7,7 +7,7 @@ class CorridaModel(settings.DBBaseModel):
     __tablename__ = "corridas"
 
     id_corrida: int = Column(Integer, primary_key=True)
-    data: DateTime = Column(DateTime, nullable=False)
+    data: DateTime = Column(DateTime(timezone=True), nullable=False)
     id_pista: int = Column(Integer, ForeignKey("pistas.id_pista"), nullable=False)
     id_temporada: int = Column(
         Integer,

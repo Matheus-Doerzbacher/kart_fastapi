@@ -8,6 +8,9 @@ class CorridaBase(BaseModel):
     id_pista: int
     id_temporada: int
 
+    class Config:
+        json_encoders = {datetime: lambda dt: dt.isoformat()}
+
 
 class CorridaCreate(CorridaBase):
     pass

@@ -1,12 +1,13 @@
 from pydantic import BaseModel, EmailStr
 from typing import Optional
 
-from schemas.temporada_piloto_schema import TemporadaPilotoResults
+from schemas.temporada_piloto_schema import TemporadaPiloto
 
 
 class PilotoBase(BaseModel):
     nome: str
-    url_foto: str
+    url_foto: Optional[str] = None
+    temporada_atual: Optional[TemporadaPiloto]
 
 
 class PilotoCreate(PilotoBase):
@@ -27,7 +28,3 @@ class PilotoInDB(PilotoBase):
 
 class Piloto(PilotoInDB):
     pass
-
-
-class PilotoDatas(Piloto):
-    temporada_atual: Optional[TemporadaPilotoResults]

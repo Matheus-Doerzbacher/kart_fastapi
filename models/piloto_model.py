@@ -8,7 +8,7 @@ class PilotoModel(settings.DBBaseModel):
 
     id_piloto: int = Column(Integer, primary_key=True)
     nome: str = Column(String(256), nullable=False)
-    url_foto: str = Column(String(256), nullable=False)
+    url_foto: str = Column(String(256))
 
     # Relacionamentos
     temporada_atual = relationship(

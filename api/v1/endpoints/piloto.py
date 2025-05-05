@@ -13,7 +13,7 @@ from models.__all_models import (
     TemporadaPilotoModel,
     TemporadaModel,
 )
-from schemas.piloto_schema import Piloto, PilotoCreate, PilotoDatas, PilotoUpdate
+from schemas.piloto_schema import Piloto, PilotoCreate, PilotoUpdate
 
 router = APIRouter(prefix="/pilotos", tags=["pilotos"])
 
@@ -36,6 +36,31 @@ async def post_piloto(
         return novo_piloto
 
 
+@router.get("/temporada/{temporada_id}", response_model=List[Piloto])
+async def get_pilotos_por_temporada(
+    temporada_id: int,
+    db: AsyncSession = Depends(get_session),
+):
+    async with db as session:
+        query = select(TemporadaPilotoModel).filter(
+            TemporadaPilotoModel.id_temporada == temporada_id
+        )
+        result = await session.execute(query)
+        pilotos_temporada: List[TemporadaPilotoModel] = result.scalars().unique().all()
+
+        pilotos = []
+
+        for piloto in pilotos_temporada:
+            query = select(PilotoModel).filter(
+                PilotoModel.id_piloto == piloto.id_piloto
+            )
+            result = await session.execute(query)
+            piloto_model = result.scalars().unique().one_or_none()
+            pilotos.append(piloto_model)
+
+        return pilotos
+
+
 # GET Pilotos
 @router.get("/", response_model=List[Piloto])
 async def get_pilotos(
@@ -50,7 +75,7 @@ async def get_pilotos(
 
 
 # GET Piloto por ID
-@router.get("/{piloto_id}", response_model=PilotoDatas)
+@router.get("/{piloto_id}", response_model=Piloto)
 async def get_piloto(
     piloto_id: int,
     db: AsyncSession = Depends(get_session),
