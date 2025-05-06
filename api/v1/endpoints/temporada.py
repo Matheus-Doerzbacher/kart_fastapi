@@ -31,6 +31,21 @@ async def create_temporada(
         return db_temporada
 
 
+# GET Temporadas
+@router.get("/", response_model=List[Temporada])
+async def get_temporadas(
+    db: AsyncSession = Depends(get_session),
+):
+    """
+    Retorna todas as temporadas
+    """
+    async with db as session:
+        query = select(TemporadaModel)
+        result = await session.execute(query)
+        temporadas = result.scalars().all()
+        return temporadas
+
+
 # GET Participantes de uma temporada
 @router.get("/{temporada_id}/participantes", response_model=int)
 async def get_participantes_temporada(
@@ -53,21 +68,6 @@ async def get_participantes_temporada(
             participantes += len(resultado)
 
         return participantes
-
-
-# GET Temporadas
-@router.get("/", response_model=List[Temporada])
-async def get_temporadas(
-    db: AsyncSession = Depends(get_session),
-):
-    """
-    Retorna todas as temporadas
-    """
-    async with db as session:
-        query = select(TemporadaModel)
-        result = await session.execute(query)
-        temporadas = result.scalars().all()
-        return temporadas
 
 
 # GET Temporada atual
